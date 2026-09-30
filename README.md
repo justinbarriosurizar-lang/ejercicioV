@@ -1,13 +1,13 @@
 # ejercicioV
-# Análisis de Diseño y Arquitectura - Circuito Verde
+# Análisis de Circuito Verde
 
-## Introducción y Propósito del Sistema
+## propósito del sistema
 
 * **Objetivo principal:** Desarrollar un simulador educativo interactivo de lógica digital y compuertas lógicas implementado en Java sobre el framework LibGDX.
 * **Entorno del juego:** Proporciona un espacio donde el usuario interactúa con componentes electrónicos virtuales, evalúa estados lógicos y gestiona el flujo de señales dentro de un circuito digital.
 * **Calidad del diseño:** Lo fundamentamos en el patrón Modelo-Vista-Controlador para asegurar la escalabilidad, mantenibilidad y prueba del código.
 
-## Aplicación del Patrón Modelo-Vista-Controlador (MVC)
+## Aplicación del Patrón modelo vista controlador
 
 * **Capa del Modelo:**
 * Encapsula la representación de los componentes del circuito y todas las reglas de juego.
@@ -28,7 +28,7 @@
 
 
 
-## Jerarquía de Clases, Herencia y Polimorfismo
+## Jerarquía de clases, herencia y polimorfismo
 
 * **Clase base abstracta (`CompuertaLogica`):**
 * Define los atributos compartidos por todos los componentes, como las terminales de entrada (`entradaA`, `entradaB`) y de resultado (`salida`).
@@ -45,7 +45,7 @@
 
 
 
-## Gestión del Circuito y Persistencia de Datos
+## como funciona el circuito
 
 * **Clase `TableroCircuito`:**
 * Administra el estado global del circuito almacenando una lista dinámica (`List<CompuertaLogica>`) de componentes.
