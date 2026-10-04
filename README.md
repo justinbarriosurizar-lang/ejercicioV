@@ -15,23 +15,23 @@ Para que el proyecto no se volviera un desastre a nivel de código y fuera fáci
 
 ## Clases principales y cómo están conectadas
 
-### 1. CompuertaLogica
+### CompuertaLogica
 Es la clase padre de todas las compuertas. 
 * **Atributos:** Tiene las entradas `-boolean entradaA`, `-boolean entradaB` y la `-boolean salida`.
 * **Métodos:** Incluye el método abstracto `+evaluar(): boolean`, que obliga a cada compuerta a calcular su propio resultado.
 
-### 2. CompuertaAND, CompuertaOR, CompuertaXOR (Subclases)
+### CompuertaAND, CompuertaOR, CompuertaXOR (Subclases)
 Heredan directamente de `CompuertaLogica`. Cada una sobreescribe el método `+evaluar(): boolean` según su tabla de verdad. Gracias al polimorfismo, el programa maneja cualquier compuerta de forma genérica sin importar de qué tipo sea.
 
-### 3. CircuitoVerdeGame
+### CircuitoVerdeGame
 Es la clase principal que extiende de `<<LibGDX>> Game`. Se encarga de gestionar las pantallas (`+setScreen()`, `+getScreen()`) y mantener el ciclo de vida de la aplicación.
 
-### 4. TableroCircuito
+### TableroCircuito
 Es la clase donde pasa la magia del juego.
 * **Atributos:** Guarda una lista de compuertas (`-List<CompuertaLogica> compuertas`).
 * **Métodos:** Permite agregar/eliminar compuertas (`+agregarCompuerta()`, `+eliminarCompuerta()`) y recalcular las señales cuando algo cambia (`+actualizarCircuito()`).
 
-### 5. GestorJSON
+### GestorJSON
 Clase dedicada a guardar y cargar partidas.
 * **Métodos:** `+guardarProgreso()` y `+cargarProgreso()`. Lee y escribe el estado del tablero en un archivo JSON para no perder el avance al cerrar la aplicación.
 
