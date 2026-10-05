@@ -1,57 +1,40 @@
-# ejercicioV
-# Análisis de Circuito Verde
+# Circuito Verde
 
-## propósito del sistema
-
-* **Objetivo principal:** Desarrollar un simulador educativo interactivo de lógica digital y compuertas lógicas implementado en Java sobre el framework LibGDX.
-* **Entorno del juego:** Proporciona un espacio donde el usuario interactúa con componentes electrónicos virtuales, evalúa estados lógicos y gestiona el flujo de señales dentro de un circuito digital.
-* **Calidad del diseño:** Lo fundamentamos en el patrón Modelo-Vista-Controlador para asegurar la escalabilidad, mantenibilidad y prueba del código.
-
-## Aplicación del Patrón modelo vista controlador
-
-* **Capa del Modelo:**
-* Encapsula la representación de los componentes del circuito y todas las reglas de juego.
-* Contiene la jerarquía de compuertas lógicas y las estructuras de datos que almacenan los estados de las señales electrónicas.
-* Funciona de forma completamente autónoma, sin referencias a librerías de gráficos ni a la interfaz de usuario.
+Mini juego/simulador educativo desarrollado en Java con LibGDX para poner en práctica la lógica digital, la arquitectura MVC y los conceptos de POO.
 
 
-* **Capa de la Vista:**
-* Renderiza gráficamente el simulador utilizando los módulos visuales de LibGDX.
-* Muestra en pantalla las entradas, salidas y el estado visual de cada compuerta del circuito.
-* Actúa como un reflejo visual pasivo, sin tomar decisiones lógicas ni procesar cálculos de señales.
+## ¿De qué trata el proyecto?
 
+La idea principal fue hacer un simulador interactivo donde podemos ir armando circuitos en un tablero digital, probando compuertas lógicas y viendo cómo fluye la señal de entrada a salida. 
 
-* **Capa del Controlador:**
-* Intermedia el flujo de comunicación entre el usuario, la vista y el modelo.
-* Captura los eventos e interacciones del operador (clics de ratón, teclas) y los traduce en instrucciones para actualizar el modelo.
-* Notifica a la vista cuando debe refrescar la pantalla para reflejar los cambios realizados en el modelo.
+Para que el proyecto no se volviera un desastre a nivel de código y fuera fácil de mantener, organizamos todo usando la arquitectura **Modelo-Vista-Controlador (MVC)**:
 
+* **Modelo:** Es la lógica pura del juego. Aquí están las clases de las compuertas y los valores booleanos. No sabe nada de gráficos ni de LibGDX, solo procesa datos.
+* **Vista:** Se encarga únicamente de dibujar el tablero y las compuertas en pantalla usando LibGDX. No calcula resultados, solo muestra lo que el modelo le indica.
+* **Controlador:** Detecta lo que hace el usuario, le avisa al modelo para que actualice los datos y le dice a la vista que vuelva a pintar.
 
+## Clases principales y cómo están conectadas
 
-## Jerarquía de clases, herencia y polimorfismo
+### CompuertaLogica
+Es la clase padre de todas las compuertas. 
+* **Atributos:** Tiene las entradas `-boolean entradaA`, `-boolean entradaB` y la `-boolean salida`.
+* **Métodos:** Incluye el método abstracto `+evaluar(): boolean`, que obliga a cada compuerta a calcular su propio resultado.
 
-* **Clase base abstracta (`CompuertaLogica`):**
-* Define los atributos compartidos por todos los componentes, como las terminales de entrada (`entradaA`, `entradaB`) y de resultado (`salida`).
-* Declara el método abstracto `evaluar()`, obligando a las clases hijas a definir su propio comportamiento lógico.
+### CompuertaAND, CompuertaOR, CompuertaXOR (Subclases)
+Heredan directamente de `CompuertaLogica`. Cada una sobreescribe el método `+evaluar(): boolean` según su tabla de verdad. Gracias al polimorfismo, el programa maneja cualquier compuerta de forma genérica sin importar de qué tipo sea.
 
+### CircuitoVerdeGame
+Es la clase principal que extiende de `<<LibGDX>> Game`. Se encarga de gestionar las pantallas (`+setScreen()`, `+getScreen()`) y mantener el ciclo de vida de la aplicación.
 
-* **Especialización de compuertas (`CompuertaAND`, `CompuertaOR`, `CompuertaXOR`):**
-* Heredan directamente de `CompuertaLogica` e implementan la lógica de sus respectivas tablas de verdad dentro del método `evaluar()`.
+### TableroCircuito
+Es la clase donde pasa la magia del juego.
+* **Atributos:** Guarda una lista de compuertas (`-List<CompuertaLogica> compuertas`).
+* **Métodos:** Permite agregar/eliminar compuertas (`+agregarCompuerta()`, `+eliminarCompuerta()`) y recalcular las señales cuando algo cambia (`+actualizarCircuito()`).
 
+### GestorJSON
+Clase dedicada a guardar y cargar partidas.
+* **Métodos:** `+guardarProgreso()` y `+cargarProgreso()`. Lee y escribe el estado del tablero en un archivo JSON para no perder el avance al cerrar la aplicación.
 
-* **Polimorfismo aplicado:**
-* Permite que las clases gestoras del tablero traten a cualquier componente de forma genérica como un objeto de tipo `CompuertaLogica`.
-* Ejecuta la evaluación lógica sin necesidad de verificar el tipo concreto de compuerta en tiempo de ejecución, facilitando la adición futura de nuevas compuertas (como NOT o NAND).
+## ¿Cómo funciona el juego al final?
 
-
-
-## como funciona el circuito
-
-* **Clase `TableroCircuito`:**
-* Administra el estado global del circuito almacenando una lista dinámica (`List<CompuertaLogica>`) de componentes.
-* Coordina la conexión de nodos y activa las evaluaciones en cadena cuando el usuario modifica una señal de entrada.
-
-
-* **Clase `GestorJSON`:**
-* Responsable de la persistencia del progreso mediante la serialización del estado del tablero hacia un archivo en formato JSON.
-* Reconstruye la sesión guardada al iniciar el juego, instanciando nuevamente la colección polimórfica del tablero de forma independiente a la capa visual.
+Básicamente entras a la aplicación, colocas tus compuertas (`AND`, `OR`, `XOR`) en el `TableroCircuito`, cambias los interruptores de entrada y el sistema evalúa la señal en cadena. Si quieres pausar o seguir después, el `GestorJSON` guarda la configuración de tus compuertas en un archivo local para recuperar tu partida en cualquier momento.
